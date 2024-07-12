@@ -1,7 +1,6 @@
 # find-replace.nvim
 
-A simple Neovim plugin to find and replace text in the current buffer with visual highlights.
-This is rly early version, but should work :).
+A simple Neovim plugin to find and replace text in the current buffer with visual highlights. This is an early version, but it should work well. Hopefully, others will find it as useful as I do.
 
 ## Installation
 
