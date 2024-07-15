@@ -1,30 +1,9 @@
 local M = {}
 
--- Default configuration
-local default_config = {
-	highlight_group = "CustomSearchHL",
-	highlight_bg = "yellow",
-	highlight_fg = "black",
-	keymap = "<leader>fr",
-}
-
-local _config = vim.deepcopy(default_config)
-
--- Function to setup user configuration
-function M.config(user_config)
-	_config = vim.tbl_extend("keep", user_config, _config or default_config)
-	vim.cmd(
-		"highlight "
-			.. _config.highlight_group
-			.. " guibg="
-			.. _config.highlight_bg
-			.. " guifg="
-			.. _config.highlight_fg
-	)
-	vim.keymap.set("n", _config.keymap, M.find_and_replace_in_buffer, { desc = "Find and replace in current buffer" })
-end
-
 function M.find_and_replace_in_buffer()
+	-- Create a new highlight group
+	vim.cmd("highlight CustomSearchHL guibg=yellow guifg=black")
+
 	local bufnr = vim.api.nvim_get_current_buf()
 	local ns_id = vim.api.nvim_create_namespace("custom_search_highlight")
 
@@ -46,20 +25,14 @@ function M.find_and_replace_in_buffer()
 		end
 
 		for _, match in ipairs(matches) do
-			vim.api.nvim_buf_add_highlight(
-				bufnr,
-				ns_id,
-				_config.highlight_group,
-				match.line,
-				match.col_start,
-				match.col_end
-			)
+			vim.api.nvim_buf_add_highlight(bufnr, ns_id, "CustomSearchHL", match.line, match.col_start, match.col_end)
 		end
 		return #matches
 	end
 
 	-- Interactive search prompt
 	local search_term = ""
+	-- local match_count = 0
 	while true do
 		vim.api.nvim_echo({ { "find> " .. search_term, "Normal" } }, false, {})
 		local char = vim.fn.getchar()
@@ -84,6 +57,17 @@ function M.find_and_replace_in_buffer()
 		return
 	end
 
+	-- print(string.format("\n %d matches. Confirm 'y', decline any: ", match_count))
+	--
+	-- -- Wait for user input
+	-- local choice = vim.fn.getchar()
+	--
+	-- if choice ~= 121 then -- 121 is the ASCII code for 'y'
+	--   vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
+	--   print 'Operation cancelled.'
+	--   return
+	-- end
+
 	-- Prompt for the replacement term
 	local replace_term = vim.fn.input("replace> ")
 
@@ -104,5 +88,8 @@ function M.find_and_replace_in_buffer()
 	vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
 	print(string.format("Replaced %d occurrence(s) of '%s' with '%s'", replacement_count, search_term, replace_term))
 end
+
+-- Set up a keymap to call the function
+vim.keymap.set("n", "<leader>fr", M.find_and_replace_in_buffer, { desc = "Find and replace in current buffer" })
 
 return M
