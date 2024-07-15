@@ -57,17 +57,6 @@ function M.find_and_replace_in_buffer()
 		return
 	end
 
-	-- print(string.format("\n %d matches. Confirm 'y', decline any: ", match_count))
-	--
-	-- -- Wait for user input
-	-- local choice = vim.fn.getchar()
-	--
-	-- if choice ~= 121 then -- 121 is the ASCII code for 'y'
-	--   vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
-	--   print 'Operation cancelled.'
-	--   return
-	-- end
-
 	-- Prompt for the replacement term
 	local replace_term = vim.fn.input("replace> ")
 
