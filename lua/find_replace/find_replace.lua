@@ -1,9 +1,29 @@
 local M = {}
 
+local config = {
+	-- Configuration options
+	highlight_group = "CustomSearchHL",
+	highlight_bg = "yellow",
+	highlight_fg = "black",
+	keymap = "<leader>fr",
+}
+
+function M.setup(user_config)
+	-- Apply the configuration to the module
+	M.config = vim.tbl_extend("force", config, user_config or {})
+	vim.cmd(
+		"highlight "
+			.. M.config.highlight_group
+			.. " guibg="
+			.. M.config.highlight_bg
+			.. " guifg="
+			.. M.config.highlight_fg
+	)
+	vim.kyemap.set("n", M.config.keymap, M.find_and_replace_in_buffer, { desc = "Find and replace in current buffer" })
+end
+
 function M.find_and_replace_in_buffer()
 	-- Create a new highlight group
-	vim.cmd("highlight CustomSearchHL guibg=yellow guifg=black")
-
 	local bufnr = vim.api.nvim_get_current_buf()
 	local ns_id = vim.api.nvim_create_namespace("custom_search_highlight")
 
@@ -25,7 +45,14 @@ function M.find_and_replace_in_buffer()
 		end
 
 		for _, match in ipairs(matches) do
-			vim.api.nvim_buf_add_highlight(bufnr, ns_id, "CustomSearchHL", match.line, match.col_start, match.col_end)
+			vim.api.nvim_buf_add_highlight(
+				bufnr,
+				ns_id,
+				M.config.highlight_group,
+				match.line,
+				match.col_start,
+				match.col_end
+			)
 		end
 		return #matches
 	end
@@ -77,8 +104,5 @@ function M.find_and_replace_in_buffer()
 	vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
 	print(string.format("Replaced %d occurrence(s) of '%s' with '%s'", replacement_count, search_term, replace_term))
 end
-
--- Set up a keymap to call the function
-vim.keymap.set("n", "<leader>fr", M.find_and_replace_in_buffer, { desc = "Find and replace in current buffer" })
 
 return M
