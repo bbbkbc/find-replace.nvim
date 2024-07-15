@@ -1,6 +1,6 @@
 local M = {}
 
-local config = {
+M.config = {
 	-- Configuration options
 	highlight_group = "CustomSearchHL",
 	highlight_bg = "yellow",
@@ -10,7 +10,7 @@ local config = {
 
 function M.setup(user_config)
 	-- Apply the configuration to the module
-	M.config = vim.tbl_extend("force", config, user_config or {})
+	M.config = vim.tbl_extend("force", M.config, user_config or {})
 	vim.cmd(
 		"highlight "
 			.. M.config.highlight_group
