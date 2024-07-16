@@ -1,8 +1,8 @@
 local M = {}
 
 M.options = {
-	highhlight_bg = "green",
-	highhlight_fg = "white",
+	hl_bg = "green",
+	hl_fg = "white",
 }
 
 function M.setup(opts)
@@ -12,8 +12,8 @@ end
 function M.find_and_replace_in_buffer()
 	-- Create a new highlight group
 
-	if M.options.highhlight_bg then
-		print("highlight bg is set to " .. M.options.highhlight_bg)
+	if M.options.hl_bg then
+		print("highlight bg is set to " .. M.options.hl_bg)
 	else
 		print("highlight bg is not set")
 	end
