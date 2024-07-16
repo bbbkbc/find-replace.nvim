@@ -12,13 +12,6 @@ end
 function M.find_and_replace_in_buffer()
 	-- Create a new highlight group
 
-	if M.options.hl_bg then
-		print("highlight bg is set to " .. M.options.hl_bg)
-	else
-		print("highlight bg is not set")
-	end
-
-	-- vim.cmd("highlight CustomSearchHL guibg=yellow guifg=black")
 	vim.cmd("highlight CustomSearchHL guibg=" .. M.options.hl_bg .. " guifg=" .. M.options.hl_fg)
 	local bufnr = vim.api.nvim_get_current_buf()
 	local ns_id = vim.api.nvim_create_namespace("custom_search_highlight")
