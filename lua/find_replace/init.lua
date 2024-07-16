@@ -1,7 +1,23 @@
 local M = {}
 
+M.options = {
+	highhlight_bg = "green",
+	highhlight_fg = "white",
+}
+
+function M.setup(opts)
+	M.options = vim.tbl_extend("force", M.options, opts or {})
+end
+
 function M.find_and_replace_in_buffer()
 	-- Create a new highlight group
+
+	if M.options.highhlight_bg then
+		print("highlight bg is set")
+	else
+		print("highlight bg is not set")
+	end
+
 	vim.cmd("highlight CustomSearchHL guibg=yellow guifg=black")
 
 	local bufnr = vim.api.nvim_get_current_buf()
