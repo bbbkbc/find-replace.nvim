@@ -1,9 +1,18 @@
 local M = {}
 
+M.options = {
+	hl_bg = "green",
+	hl_fg = "white",
+}
+
+function M.setup(opts)
+	M.options = vim.tbl_extend("force", M.options, opts or {})
+end
+
 function M.find_and_replace_in_buffer()
 	-- Create a new highlight group
-	vim.cmd("highlight CustomSearchHL guibg=yellow guifg=black")
 
+	vim.cmd("highlight CustomSearchHL guibg=" .. M.options.hl_bg .. " guifg=" .. M.options.hl_fg)
 	local bufnr = vim.api.nvim_get_current_buf()
 	local ns_id = vim.api.nvim_create_namespace("custom_search_highlight")
 
@@ -57,17 +66,6 @@ function M.find_and_replace_in_buffer()
 		return
 	end
 
-	-- print(string.format("\n %d matches. Confirm 'y', decline any: ", match_count))
-	--
-	-- -- Wait for user input
-	-- local choice = vim.fn.getchar()
-	--
-	-- if choice ~= 121 then -- 121 is the ASCII code for 'y'
-	--   vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
-	--   print 'Operation cancelled.'
-	--   return
-	-- end
-
 	-- Prompt for the replacement term
 	local replace_term = vim.fn.input("replace> ")
 
@@ -90,6 +88,6 @@ function M.find_and_replace_in_buffer()
 end
 
 -- Set up a keymap to call the function
-vim.keymap.set("n", "<leader>fr", M.find_and_replace_in_buffer, { desc = "Find and replace in current buffer" })
+-- vim.keymap.set("n", "<leader>fr", M.find_and_replace_in_buffer, { desc = "Find and replace in current buffer" })
 
 return M
