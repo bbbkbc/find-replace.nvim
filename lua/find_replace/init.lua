@@ -13,7 +13,7 @@ function M.find_and_replace_in_buffer()
 	-- Create a new highlight group
 
 	if M.options.highhlight_bg then
-		print("highlight bg is set")
+		print("highlight bg is set to " .. M.options.highhlight_bg)
 	else
 		print("highlight bg is not set")
 	end
