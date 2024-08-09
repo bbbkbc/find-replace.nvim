@@ -40,13 +40,13 @@ local function interactive_search(bufnr, ns_id)
 	while true do
 		vim.api.nvim_echo({ { "find> " .. search_term, "Normal" } }, false, {})
 		local char = vim.fn.getchar()
-		if char == "\r" then -- Enter key
+		if char == 13 then -- Enter key
 			break
-		elseif char == "\27" then -- Escape key
+		elseif char == 27 then -- Escape key
 			vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
 			print("\nSearch cancelled.")
 			return nil
-		elseif char == "\b" or char == "\127" then -- Backspace
+		elseif char == 8 or char == 127 then -- Backspace
 			if #search_term > 0 then
 				search_term = search_term:sub(1, -2)
 			end
