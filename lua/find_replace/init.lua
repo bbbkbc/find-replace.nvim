@@ -47,7 +47,7 @@ local function interactive_search(bufnr, ns_id)
 			print("\nSearch cancelled.")
 			return nil
 		elseif char == 08 or char == 127 then -- Backspace
-			if #search_term > 0 then
+			if search_term > 0 then
 				search_term = search_term:sub(1, -2)
 			end
 		else
