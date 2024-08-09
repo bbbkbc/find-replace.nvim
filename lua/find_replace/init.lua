@@ -47,7 +47,9 @@ local function interactive_search(bufnr, ns_id)
 			print("\nSearch cancelled.")
 			return nil
 		elseif char == 8 or char == 127 then -- Backspace
-			search_term = search_term:sub(1, -2)
+			if #search_term > 0 then
+				search_term = search_term:sub(1, -2)
+			end
 		else
 			search_term = search_term .. vim.fn.nr2char(char)
 		end
