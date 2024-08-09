@@ -39,19 +39,26 @@ local function interactive_search(bufnr, ns_id)
 	local search_term = ""
 	while true do
 		vim.api.nvim_echo({ { "find> " .. search_term, "Normal" } }, false, {})
-		local char = vim.fn.getchar()
-		if char == 13 then -- Enter key
+		local char = vim.fn.getcharstr()
+
+		-- Convert the input character to a termcode
+		local termcode = vim.api.nvim_replace_termcodes(char, true, false, true)
+
+		if termcode == vim.api.nvim_replace_termcodes("<CR>", true, false, true) then -- Enter key
 			break
-		elseif char == 27 then -- Escape key
+		elseif termcode == vim.api.nvim_replace_termcodes("<Esc>", true, false, true) then -- Escape key
 			vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
 			print("\nSearch cancelled.")
 			return nil
-		elseif char == 8 or char == 127 then -- Backspace
+		elseif
+			termcode == vim.api.nvim_replace_termcodes("<BS>", true, false, true)
+			or termcode == vim.api.nvim_replace_termcodes("<C-h>", true, false, true)
+		then -- Backspace
 			if #search_term > 0 then
 				search_term = search_term:sub(1, -2)
 			end
 		else
-			search_term = search_term .. vim.fn.nr2char(char)
+			search_term = search_term .. char
 		end
 		add_highlights(bufnr, ns_id, search_term)
 		vim.cmd("redraw")
@@ -65,6 +72,37 @@ local function interactive_search(bufnr, ns_id)
 
 	return search_term
 end
+
+-- local function interactive_search(bufnr, ns_id)
+-- 	local search_term = ""
+-- 	while true do
+-- 		vim.api.nvim_echo({ { "find> " .. search_term, "Normal" } }, false, {})
+-- 		local char = vim.fn.getchar()
+-- 		if char == 13 then -- Enter key
+-- 			break
+-- 		elseif char == 27 then -- Escape key
+-- 			vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
+-- 			print("\nSearch cancelled.")
+-- 			return nil
+-- 		elseif char == 8 or char == 127 then -- Backspace
+-- 			if #search_term > 0 then
+-- 				search_term = search_term:sub(1, -2)
+-- 			end
+-- 		else
+-- 			search_term = search_term .. vim.fn.nr2char(char)
+-- 		end
+-- 		add_highlights(bufnr, ns_id, search_term)
+-- 		vim.cmd("redraw")
+-- 	end
+--
+-- 	if search_term == "" then
+-- 		vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
+-- 		print("\nSearch term is empty. Aborting.")
+-- 		return nil
+-- 	end
+--
+-- 	return search_term
+-- end
 
 local function replace_in_buffer(bufnr, search_term, replace_term)
 	local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
